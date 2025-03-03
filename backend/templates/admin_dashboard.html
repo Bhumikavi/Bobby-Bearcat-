@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* General body styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        /* Header styling */
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        /* Navigation bar */
+        nav {
+            background: #333;
+            padding: 10px 20px;
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+            position: relative;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: white;
+            font-size: 16px;
+            padding: 8px 12px;
+            display: inline-block;
+        }
+
+        nav ul li a:hover {
+            background: #555;
+            border-radius: 5px;
+        }
+
+        /* Dropdown Styling */
+        nav ul li ul {
+            position: absolute;
+            top: 40px;
+            left: 0;
+            background: #333;
+            padding: 10px 0;
+            display: none;
+            list-style: none;
+            min-width: 180px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+        }
+
+        nav ul li ul li {
+            margin: 0;
+            position: relative;
+        }
+
+        nav ul li ul li a {
+            padding: 10px;
+            display: block;
+        }
+
+        nav ul li ul li a:hover {
+            background: #555;
+        }
+
+        /* Show dropdown only when hovering */
+        nav ul li:hover > ul {
+            display: block;
+        }
+
+        /* Sub-dropdown for Data Entry */
+        nav ul li ul li ul {
+            position: absolute;
+            left: 100%;
+            top: 0;
+            display: none;
+            background: #333;
+            min-width: 180px;
+        }
+
+        nav ul li ul li:hover > ul {
+            display: block;
+        }
+
+        /* Main content styling */
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <h1>Welcome, {{ username }}</h1>
+    </header>
+
+    <!-- Navigation -->
+    <nav>
+        <ul>
+            <li><a href="/home">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/contact">Contact</a></li>
+            <li>
+                <a href="#">Tools</a>
+                <ul>
+                    <li><a href="/vehicle-data">Vehicle Data</a></li>
+                    <li>
+                        <a href="#">Data Entry</a>
+                        <ul>
+                            <li><a href="/fueling-event">Fueling Event</a></li>
+                            <li><a href="/maintenance-event">Maintenance Event</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="/reports">Reports</a></li>
+                    <li><a href="/user-setup">User Setup</a></li>
+                </ul>
+            </li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </nav>
+
+    <!-- Content -->
+    <div class="content">
+        <h2>Admin Dashboard</h2>
+        <p>Use the navigation menu to manage vehicle data, enter new records, or generate reports.</p>
+    </div>
+</body>
+</html>

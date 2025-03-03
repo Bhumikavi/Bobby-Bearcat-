@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        /* Inline styles for simplicity, can be moved to styles.css */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+        }
+
+        nav {
+            background-color: #0056b3;
+            padding: 10px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        .about-container {
+            width: 80%;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .about-content {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Our Application</h1>
+    </header>
+    <nav>
+        <a href="/home">Home</a>
+        <a href="/about">About</a>
+        <a href="/contact">Contact</a>
+        {% if session.get('role') == 'admin' %}
+        <a href="/admin">Admin Dashboard</a>
+        {% elif session.get('role') == 'user' %}
+        <a href="/user">User Dashboard</a>
+        {% endif %}
+        <a href="/logout">Logout</a>
+    </nav>
+    <div class="about-container">
+        <h1>About Us</h1>
+        <div class="about-content">
+            <p>
+                Welcome to our application! This project is designed to streamline user and admin management, offering a seamless experience for managing data effectively.
+            </p>
+            <p>
+                Our team is committed to delivering a secure, user-friendly system to meet your needs. Whether you're an administrator overseeing operations or a user accessing essential tools, this application is built with you in mind.
+            </p>
+            <p>
+                Thank you for choosing our platform, and feel free to reach out if you have any questions or need assistance.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

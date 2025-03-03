@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* Basic body styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        /* Header section */
+        header {
+            background-color: #28a745; /* Green color for the user dashboard */
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        /* Navigation bar styling */
+        nav {
+            background: #333;
+            padding: 10px 20px;
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+            position: relative; /* Needed for dropdown */
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: white;
+            font-size: 16px;
+            padding: 8px 12px;
+            display: inline-block;
+        }
+
+        nav ul li a:hover {
+            background: #555;
+            border-radius: 5px;
+        }
+
+        /* Dropdown styling */
+        nav ul li ul {
+            position: absolute;
+            top: 35px;
+            left: 0;
+            background: #333;
+            padding: 10px 0;
+            display: none;
+            list-style: none;
+            min-width: 180px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+        }
+
+        nav ul li ul li {
+            margin: 0;
+        }
+
+        nav ul li ul li a {
+            padding: 10px;
+            display: block;
+            color: white;
+        }
+
+        nav ul li ul li a:hover {
+            background: #555;
+        }
+
+        /* Show dropdown when hovering */
+        nav ul li:hover ul {
+            display: block;
+        }
+
+        /* Main content styling */
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <h1>Welcome, {{ username }}</h1>
+    </header>
+
+    <!-- Navigation -->
+    <nav>
+        <ul>
+            <li><a href="/home">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/contact">Contact</a></li>
+            <li>
+                <a href="#">Data Entry</a>
+                <ul>
+                    <li><a href="/fueling-event">Fueling Event</a></li>
+                    <li><a href="/maintenance-event">Maintenance Event</a></li>
+                </ul>
+            </li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </nav>
+
+    <!-- Content -->
+    <div class="content">
+        <h2>User Dashboard</h2>
+        <p>Welcome to the user dashboard! Use the navigation menu to access various features.</p>
+    </div>
+</body>
+</html>
