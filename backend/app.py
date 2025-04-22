@@ -7,7 +7,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 # Initialize Flask app and set the correct template folder
 app = Flask(__name__, template_folder="templates")
 app.secret_key = "secret_key"  # For session management
-
+months = []  # Initialize months as an empty list
+fuel_expenses = []  # Initialize fuel_expenses as an empty list
+fuel_data = list(zip(months, fuel_expenses))
 # Database connection function
 def db_connection():
     # Ensure the database path is correct
@@ -284,7 +286,8 @@ def reports():
                            miles_driven=miles_driven,
                            maintenance_expenses=maintenance_expenses,
                            vehicles=vehicles,
-                           maintenance_events=maintenance_events)
+                           maintenance_events=maintenance_events,
+                           fuel_data=fuel_data)
 
 @app.route("/download-report")
 def download_report():
@@ -298,6 +301,7 @@ def download_report():
     # Fetch all maintenance events
     cursor.execute("SELECT id, vehicle_number, date, maintenance_cost, maintenance_description FROM maintenance_events")
     maintenance_events = cursor.fetchall()
+    
 
     # Convert to DataFrame
     fuel_df = pd.DataFrame(fueling_events, columns=["ID", "Vehicle Number", "Date", "Current Mileage", "Fuel Added", "Fuel Cost"])
