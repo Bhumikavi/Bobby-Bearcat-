@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reports</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #007bff;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+
+    nav {
+      background: #333;
+      padding: 10px;
+      text-align: center;
+    }
+
+    nav a {
+      color: white;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      width: 90%;
+      margin: 20px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .dropdown {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    select {
+      padding: 8px;
+      font-size: 16px;
+      margin: 0 10px;
+    }
+
+    .chart-container {
+      width: 100%;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+    }
+
+    .data-list {
+      display: none;
+    }
+
+    .download-btn {
+      margin: 30px auto;
+      display: block;
+      background: #28a745;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-weight: bold;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .download-btn:hover {
+      background: #218838;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Reports</h1>
+  </header>
+
+  <nav>
+    <a href="/home">Home</a>
+    <a href="/about">About</a>
+    <a href="/contact">Contact</a>
+    {% if session.get('role') == 'admin' %}
+    <a href="/admin">Admin Dashboard</a>
+    {% elif session.get('role') == 'user' %}
+    <a href="/user">User Dashboard</a>
+    {% endif %}
+    <a href="/logout">Logout</a>
+  </nav>
+
+  <div class="container">
+    <h2>Analytics</h2>
+
+    <div class="dropdown">
+      <label for="chartType">Chart Type:</label>
+      <select id="chartType">
+        <option value="bar">Bar</option>
+        <option value="pie">Pie</option>
+        <option value="line">Line</option>
+      </select>
+
+      <label for="dataType">Data Type:</label>
+      <select id="dataType">
+        <option value="fuel">Fuel Expense</option>
+        <option value="miles">Miles Driven</option>
+        <option value="maintenance">Maintenance Expense</option>
+      </select>
+    </div>
+
+    <div class="chart-container">
+      <canvas id="reportChart"></canvas>
+    </div>
+
+    <!-- Data Tables -->
+    <div id="data-tables">
+      <div id="fuel-table" class="data-list">
+        <h2>Fuel Expense Details</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th>Fuel Expense ($)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for month, expense in fuel_data %}
+            <tr><td>{{ month }}</td><td>${{ '%.2f'|format(expense) }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div id="miles-table" class="data-list">
+        <h2>Miles Driven Details</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th>Miles Driven</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for month, miles in miles_data %}
+            <tr><td>{{ month }}</td><td>{{ miles }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div id="maintenance-table" class="data-list">
+        <h2>Maintenance Expense Details</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th>Maintenance Expense ($)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for month, cost in maintenance_data %}
+            <tr><td>{{ month }}</td><td>${{ '%.2f'|format(cost) }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <h2>Data Summary for Department of Natural Resources</h2>
+    <a href="/download-report" class="download-btn">Download Spreadsheet</a>
+  </div>
+
+  <script>
+    const chartMonths = JSON.parse('{{ months | tojson | safe }}');
+    const fuelExpenses = JSON.parse('{{ fuel_expenses | tojson | safe }}');
+    const milesDriven = JSON.parse('{{ miles_driven | tojson | safe }}');
+    const maintenanceExpenses = JSON.parse('{{ maintenance_expenses | tojson | safe }}');
+
+    const ctx = document.getElementById('reportChart').getContext('2d');
+    let reportChart;
+
+    function createChart(type, data, label) {
+      if (reportChart) {
+        reportChart.destroy();
+      }
+
+      reportChart = new Chart(ctx, {
+        type: type,
+        data: {
+          labels: chartMonths,
+          datasets: [{
+            label: label,
+            data: data,
+            backgroundColor: type === 'pie' ? [
+              'rgba(255, 99, 132, 0.6)',
+              'rgba(54, 162, 235, 0.6)',
+              'rgba(255, 206, 86, 0.6)',
+              'rgba(75, 192, 192, 0.6)',
+              'rgba(153, 102, 255, 0.6)',
+              'rgba(255, 159, 64, 0.6)'
+            ] : 'rgba(75, 192, 192, 0.6)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: type !== 'pie' ? {
+            y: { beginAtZero: true }
+          } : {}
+        }
+      });
+    }
+
+    function updateChartAndTable() {
+      const chartType = document.getElementById('chartType').value;
+      const dataType = document.getElementById('dataType').value;
+
+      document.getElementById('fuel-table').style.display = 'none';
+      document.getElementById('miles-table').style.display = 'none';
+      document.getElementById('maintenance-table').style.display = 'none';
+
+      let data, label;
+
+      if (dataType === 'fuel') {
+        data = fuelExpenses;
+        label = 'Fuel Expense ($)';
+        document.getElementById('fuel-table').style.display = 'block';
+      } else if (dataType === 'miles') {
+        data = milesDriven;
+        label = 'Miles Driven';
+        document.getElementById('miles-table').style.display = 'block';
+      } else {
+        data = maintenanceExpenses;
+        label = 'Maintenance Expense ($)';
+        document.getElementById('maintenance-table').style.display = 'block';
+      }
+
+      createChart(chartType, data, label);
+    }
+
+    document.getElementById('chartType').addEventListener('change', updateChartAndTable);
+    document.getElementById('dataType').addEventListener('change', updateChartAndTable);
+
+    // Initial render
+    updateChartAndTable();
+  </script>
+</body>
+</html>
